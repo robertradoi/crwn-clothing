@@ -4,11 +4,16 @@ import { useEffect, useState } from "react";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
 import { CategoryContainer, CategoryTitle } from "./Category.styles";
 import { useSelector } from "react-redux";
-import { selectCategoriesMap } from "../../store/categories/category.selector.js";
+import {
+  selectCategoriesIsLoading,
+  selectCategoriesMap,
+} from "../../store/categories/category.selector.js";
+import Spinner from "../../components/Spinner/Spinner.jsx";
 
 const Category = () => {
   const { category } = useParams();
   const categoriesMap = useSelector(selectCategoriesMap);
+  const isLoading = useSelector(selectCategoriesIsLoading);
   const [products, setProducts] = useState(categoriesMap[category]);
 
   useEffect(() => {
@@ -18,12 +23,16 @@ const Category = () => {
   return (
     <>
       <CategoryTitle>{category.toUpperCase()}</CategoryTitle>
-      <CategoryContainer>
-        {products &&
-          products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-      </CategoryContainer>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <CategoryContainer>
+          {products &&
+            products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+        </CategoryContainer>
+      )}
     </>
   );
 };
